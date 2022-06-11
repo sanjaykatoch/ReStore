@@ -1,9 +1,14 @@
 import React, { useEffect, useState } from "react";
 import "./App.css";
 import Catalog from "./features/catalog/Catalog";
-import {  CssBaseline, Container } from "@mui/material";
+import { CssBaseline, Container } from "@mui/material";
 import Header from "./app/layout/Header/Header";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
+import { Route, Routes } from "react-router-dom";
+import HomePage from "./features/Home/HomePage";
+import ProductDetail from "./features/catalog/ProductDetail/ProductDetail";
+import AboutPage from "./features/About/AboutPage";
+import { ContactPage } from "@mui/icons-material";
 
 // const products=[
 //   {
@@ -37,7 +42,23 @@ function App() {
         handleThemeChange={handleThemeChange}
       ></Header>
       <Container>
-        <Catalog />
+        <Routes>
+          <Route path="/" element={<HomePage />} />
+          <Route path="/catalog" element={<Catalog />} />
+          <Route path="/catalog/:id" element={<ProductDetail />} />
+          <Route path="/about" element={<AboutPage />} />
+          <Route path="/contact" element={<ContactPage />} />
+          <Route
+            path="*"
+            element={
+              <main style={{ padding: "1rem" }}>
+                <p>There's nothing here!</p>
+              </main>
+            }
+          />
+        </Routes>
+
+        {/* <Catalog /> */}
       </Container>
     </ThemeProvider>
   );

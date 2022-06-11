@@ -7,7 +7,7 @@ import {
   Button,
   Grid,
 } from "@mui/material";
-import { Product } from "../../app/model/Product";
+import { Product } from "../../../app/model/Product";
 import ProductCard from "../ProductCard/ProductCard";
 
 interface Props {
