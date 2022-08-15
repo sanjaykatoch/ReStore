@@ -16,5 +16,7 @@ namespace API.Enitites
         public int Quantity { get; set; }
         public string PictureUrl { get; set; }
         public long QuantityInStock { get; set; }
+    
+    public Basket b{get;set;}
     }
 }
