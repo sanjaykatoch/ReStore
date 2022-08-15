@@ -73,9 +73,7 @@ const ProductDetail = () => {
     }
   }
   if (loading) return <h3>Loading..</h3>;
-
   if (!product) return <NotFound />;
-
   return (
     <Grid container spacing={6}>
       <Grid item xs={6}>
