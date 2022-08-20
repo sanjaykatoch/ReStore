@@ -18,7 +18,12 @@ import { Link } from "react-router-dom";
 import agent from "../../../app/api/agent";
 import { useStoreContext } from "../../../app/Context/StoreContext";
 import { Product } from "../../../app/model/Product";
+import {
+  useAppDispatch,
+  useAppSelector,
+} from "../../../app/Store/ConfigureStore";
 import { currenceyFormat } from "../../../app/util/util";
+import { addBasketItemAsync, setBasket } from "../../Basket/BasketSlice";
 
 interface Props {
   product: Product;
@@ -26,20 +31,21 @@ interface Props {
 
 export default function ProductCard({ product }: Props) {
   //State
-  const { setBasket } = useStoreContext();
-  const [loading, setLoading] = useState(false);
+  // const { setBasket } = useStoreContext();
+  const dispatch = useAppDispatch();
+  // const [loading, setLoading] = useState(false);
+  const { status } = useAppSelector((state) => state.basket);
 
   //function
-  function handleAddItem(productId: number) {
-    setLoading(true);
-    agent.Basket.addItem(productId, 1)
-      .then((basket) => {
-        setBasket(basket);
-        //gives undefined
-      })
-      .catch((error) => console.log(error))
-      .finally(() => setLoading(false));
-  }
+  // function handleAddItem(productId: number) {
+  //   agent.Basket.addItem(productId, 1)
+  //     .then((basket) => {
+  //       dispatch(setBasket(basket));
+  //       //gives undefined
+  //     })
+  //     .catch((error) => console.log(error))
+  //     .finally(() => setLoading(false));
+  // }
 
   return (
     <>
@@ -84,8 +90,10 @@ export default function ProductCard({ product }: Props) {
         </CardContent>
         <CardActions>
           <LoadingButton
-            loading={loading}
-            onClick={() => handleAddItem(product.id)}
+            loading={status.includes("pendingAddItem" + product.id)}
+            onClick={() =>
+              dispatch(addBasketItemAsync({ productId: product.id }))
+            }
             size="small"
           >
             Add to Cart

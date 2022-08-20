@@ -1,5 +1,6 @@
 ﻿using API.Data;
 using API.Enitites;
+using API.Extensions;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using System;
@@ -19,11 +20,23 @@ namespace API.Controllers
             this._StoreContext = context;
         }
         [HttpGet]
-        public async Task<ActionResult<List<Product>>> GetProducts()
+        public async Task<ActionResult<List<Product>>> GetProducts(string orderBy,string searchTerm, string brands, string type)
         {
-            var lsProduct = await _StoreContext.Products.ToListAsync();
 
-            return Ok(lsProduct);
+            var arrProduct = _StoreContext.Products.
+                Sort(orderBy)
+                .Search(searchTerm)
+                .Filter(brands, type)
+                .AsQueryable();
+
+            return await arrProduct.ToListAsync();
+
+            //var arrProduct = _StoreContext.Products.AsQueryable();
+
+
+            //return await ProductExtensions.Sort(arrProduct, orderBy).
+            //    Search(arrProduct,searchTerm).ToListAsync();
+
         }
         [HttpGet("{id}")]
 

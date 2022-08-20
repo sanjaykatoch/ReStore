@@ -7,16 +7,18 @@ import {
   TableCell,
   Typography,
 } from "@mui/material";
-import { useState } from "react";
-import { useStoreContext } from "../../app/Context/StoreContext";
-import { BasketItem } from "../../app/model/Basket";
+
+import { useAppSelector } from "../../app/Store/ConfigureStore";
 import { currenceyFormat } from "../../app/util/util";
 
 const BasketSummary = () => {
-  const { basket } = useStoreContext();
+  // const { basket } = useStoreContext();
+  const { basket } = useAppSelector((state) => state.basket);
   const subTotal =
-    basket?.items.reduce((sum, item) => sum + item.price * item.quantity, 0) ??
-    0;
+    basket?.items.reduce(
+      (sum: any, item: any) => sum + item.price * item.quantity,
+      0
+    ) ?? 0;
   const deliveryFee = subTotal > 10000 ? 0 : 500;
   //   const [objAmount, setObjAmount] = useState({
   //     subtotal: 0,

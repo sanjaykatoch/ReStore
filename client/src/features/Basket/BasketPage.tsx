@@ -1,6 +1,11 @@
 // import { Button } from "@material-ui/core";
 import { LoadingButton } from "@material-ui/lab";
-import { Add, Delete, Remove } from "@mui/icons-material";
+import {
+  Add,
+  Delete,
+  Remove,
+  SignalWifiStatusbarConnectedNoInternet4,
+} from "@mui/icons-material";
 import {
   Box,
   Grid,
@@ -24,46 +29,19 @@ import LoadingComponent from "../../app/layout/LoadingComponent";
 import { Basket } from "../../app/model/Basket";
 import { currenceyFormat } from "../../app/util/util";
 import BasketSummary from "./BasketSummary";
+import { useAppDispatch, useAppSelector } from "../../app/Store/ConfigureStore";
+import {
+  addBasketItemAsync,
+  removeBasketItemAsync,
+  setBasket,
+} from "./BasketSlice";
 
 const BasketPage = () => {
-  const { basket, setBasket, removeItem } = useStoreContext();
-  const [status, setStatus] = useState({
-    loading: false,
-    name: "",
-  });
+  // const { basket, setBasket, removeItem } = useStoreContext();
+  const { basket, status } = useAppSelector((state) => state.basket);
+  const dispatch = useAppDispatch();
 
-  function handledAddItem(productId: number, name: string) {
-    setStatus({
-      loading: true,
-      name,
-    });
-    agent.Basket.addItem(productId)
-      .then((basket) => setBasket(basket))
-      .catch((error) => toast.error(error))
-      .finally(() =>
-        setStatus({
-          loading: false,
-          name,
-        })
-      );
-  }
-
-  function handledRemoveItem(productId: number, quantity = 1, name: string) {
-    setStatus({
-      loading: true,
-      name,
-    });
-    agent.Basket.removeItem(productId, quantity)
-      .then((basket) => removeItem(productId, quantity))
-      .catch((error) => toast.error(error))
-      .finally(() =>
-        setStatus({
-          loading: false,
-          name,
-        })
-      );
-  }
-  if (!basket)
+  if (basket == null || basket.items.length == 0)
     return <Typography variant="h3">Your Basket is Empty</Typography>;
   // if (loading) return <LoadingComponent message="Loading Basket" />;
 
@@ -81,7 +59,7 @@ const BasketPage = () => {
             </TableRow>
           </TableHead>
           <TableBody>
-            {basket.items.map((item) => (
+            {basket.items.map((item: any) => (
               <TableRow
                 key={item.productId}
                 sx={{ "&:last-child td, &:last-child th": { border: 0 } }}
@@ -102,15 +80,16 @@ const BasketPage = () => {
                 </TableCell>
                 <TableCell align="center">
                   <LoadingButton
-                    loading={
-                      status.loading &&
-                      status.name === "remove" + item.productId
-                    }
+                    loading={status.includes(
+                      "pendingRemoveItem" + item.productId + "remove"
+                    )}
                     onClick={() =>
-                      handledRemoveItem(
-                        item.productId,
-                        1,
-                        "remove" + item.productId
+                      dispatch(
+                        removeBasketItemAsync({
+                          productId: item.productId,
+                          quantity: 1,
+                          name: "remove",
+                        })
                       )
                     }
                     color="error"
@@ -119,11 +98,14 @@ const BasketPage = () => {
                   </LoadingButton>
                   {item.quantity}
                   <LoadingButton
-                    loading={
-                      status.loading && status.name === "add" + item.productId
-                    }
-                    onClick={() =>
-                      handledAddItem(item.productId, "add" + item.productId)
+                    loading={status.includes("pendingAddItem" + item.productId)}
+                    onClick={
+                      () =>
+                        dispatch(
+                          addBasketItemAsync({ productId: item.productId })
+                        )
+
+                      //handledAddItem(item.productId, "add" + item.productId)
                     }
                     color="secondary"
                   >
@@ -135,15 +117,16 @@ const BasketPage = () => {
                 </TableCell>
                 <TableCell align="right">
                   <LoadingButton
-                    loading={
-                      status.loading &&
-                      status.name === "delete" + item.productId
-                    }
+                    loading={status.includes(
+                      "pendingRemoveItem" + item.productId + "del"
+                    )}
                     onClick={() =>
-                      handledRemoveItem(
-                        item.productId,
-                        item.quantity,
-                        "delete" + item.productId
+                      dispatch(
+                        removeBasketItemAsync({
+                          productId: item.productId,
+                          quantity: item.quantity,
+                          name: "del",
+                        })
                       )
                     }
                     color="error"

@@ -47,7 +47,7 @@ namespace API.Controllers
 
             var product = await _conext.Products.FindAsync(productId);
 
-            if (product == null) return NotFound();
+            if (product == null) return BadRequest(new ProblemDetails{Title="Product not Found"});
 
             objBasket.AddItem(product, quantity);
 

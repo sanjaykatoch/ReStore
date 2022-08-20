@@ -14,11 +14,13 @@ import "react-toastify/dist/ReactToastify.css";
 import ServerError from "./app/errors/serverError";
 import NotFound from "./app/errors/notFound";
 import BasketPage from "./features/Basket/BasketPage";
-import { useStoreContext } from "./app/Context/StoreContext";
+// import { useStoreContext } from "./app/Context/StoreContext";
 import { getCookie } from "./app/util/util";
 import agent from "./app/api/agent";
 import LoadingComponent from "./app/layout/LoadingComponent";
 import CheckoutPage from "./features/Checkout/CheckoutPage";
+import { useAppDispatch } from "./app/Store/ConfigureStore";
+import { setBasket } from "./features/Basket/BasketSlice";
 
 // const products=[
 //   {
@@ -29,14 +31,15 @@ import CheckoutPage from "./features/Checkout/CheckoutPage";
 // ];
 
 function App() {
-  const { setBasket } = useStoreContext();
+  const dispatch = useAppDispatch();
+  // const { setBasket } = useStoreContext();
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const buyerId = getCookie("buyerId");
     if (buyerId) {
       agent.Basket.get()
-        .then((basket) => setBasket(basket))
+        .then((basket) => dispatch(setBasket(basket)))
         .catch((error) => console.log(error))
         .finally(() => setLoading(false));
     } else {

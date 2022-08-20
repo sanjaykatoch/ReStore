@@ -22,12 +22,10 @@ root.render(
   <React.StrictMode>
     <HistoryRouter history={history}>
       <StoreProvider>
-        <App />
+        <Provider store={store}>
+          <App />
+        </Provider>
       </StoreProvider>
-      {/* <Provider store={store}>
-
-      
-      </Provider> */}
     </HistoryRouter>
   </React.StrictMode>
 );

@@ -13,6 +13,7 @@ import { Switch } from "@mui/material";
 import { Link, NavLink } from "react-router-dom";
 import BasketPage from "../../../features/Basket/BasketPage";
 import { useStoreContext } from "../../Context/StoreContext";
+import { useAppSelector } from "../../Store/ConfigureStore";
 
 interface Props {
   darkMode: boolean;
@@ -48,8 +49,12 @@ const navStyle = {
 };
 
 export default function Header({ darkMode, handleThemeChange }: Props) {
-  const { basket } = useStoreContext();
-  const itemCount = basket?.items.reduce((sum, item) => sum + item.quantity, 0);
+  const { basket } = useAppSelector((state) => state.basket);
+  // const { basket } = useStoreContext();
+  const itemCount = basket?.items.reduce(
+    (sum: any, item: any) => sum + item.quantity,
+    0
+  );
 
   return (
     <AppBar position="static" sx={{ mb: 4 }}>
