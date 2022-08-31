@@ -42,10 +42,10 @@ const ProductDetail = () => {
   const item = basket?.items.find((x: any) => x.productId == product?.id);
 
   useEffect(() => {
+    if (!product) dispatch(fetchProductAsync(parseInt(id!)));
     if (item) {
       setQuantity(item.quantity);
     }
-    if (!product) dispatch(fetchProductAsync(parseInt(id!)));
   }, [id, item, dispatch, product]);
 
   function handledInputChnge(event: any) {

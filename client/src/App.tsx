@@ -21,6 +21,8 @@ import LoadingComponent from "./app/layout/LoadingComponent";
 import CheckoutPage from "./features/Checkout/CheckoutPage";
 import { useAppDispatch } from "./app/Store/ConfigureStore";
 import { setBasket } from "./features/Basket/BasketSlice";
+import Login from "./features/Account/Login";
+import Register from "./features/Account/Register";
 
 // const products=[
 //   {
@@ -85,6 +87,8 @@ function App() {
           <Route path="/basket" element={<BasketPage />} />
 
           <Route path="/checkout" element={<CheckoutPage />} />
+          <Route path="/login" element={<Login />} />
+          <Route path="/register" element={<Register />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </Container>

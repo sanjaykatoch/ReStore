@@ -27,7 +27,7 @@ namespace API.Extensions
 
         }
 
-        public static IQueryable<Product> Filter(this IQueryable<Product> arrProduct, string brands,string type)
+        public static IQueryable<Product> Filter(this IQueryable<Product> arrProduct, string brands,string types)
         {
             var brandList = new List<string>();
             var typeList = new List<string>();
@@ -36,9 +36,9 @@ namespace API.Extensions
             {
                 brandList.AddRange(brands.ToLower().Split(',').ToList());
             }
-            if (!string.IsNullOrWhiteSpace(type))
+            if (!string.IsNullOrWhiteSpace(types))
             {
-                typeList.AddRange(type.ToLower().Split(',').ToList());
+                typeList.AddRange(types.ToLower().Split(',').ToList());
             }
 
             arrProduct = arrProduct.Where(x => brandList.Count == 0 || brandList.Contains(x.Brand.ToLower()));

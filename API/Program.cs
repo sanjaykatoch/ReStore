@@ -3,7 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
 using API.Data;
+using API.Entities;
 using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -14,7 +16,7 @@ namespace API
 {
     public class Program
     {
-        public static void Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var host = CreateHostBuilder(args).Build();
             var scope = host.Services.CreateScope();
@@ -23,10 +25,11 @@ namespace API
             try
             {
                 var context = services.GetRequiredService<StoreContext>();
+                var userManager = services.GetRequiredService<UserManager<User>>();
                 //add migration and add database if it is not exist
-                context.Database.Migrate();
+                 await context.Database.MigrateAsync();
                 //use for seed the data
-                DBInitialzer.Initialze(context);
+                await DBInitialzer.Initialze(context,userManager);
 
             }
             catch (Exception ex)
@@ -38,7 +41,7 @@ namespace API
             // {
             //     scope.Dispose();
             // }
-            host.Run();
+          await host.RunAsync();
         }
 
         public static IHostBuilder CreateHostBuilder(string[] args) =>

@@ -9,7 +9,7 @@ import { createBrowserHistory } from "history";
 // import { ConfigureStore } from "./app/Store/ConfigureStore";
 import { Provider } from "react-redux";
 import { store } from "./app/Store/ConfigureStore";
-import { StoreProvider } from "./app/Context/StoreContext";
+// import { StoreProvider } from "./app/Context/StoreContext";
 
 const root = ReactDOM.createRoot(
   document.getElementById("root") as HTMLElement
@@ -21,11 +21,11 @@ export const history = createBrowserHistory();
 root.render(
   <React.StrictMode>
     <HistoryRouter history={history}>
-      <StoreProvider>
-        <Provider store={store}>
-          <App />
-        </Provider>
-      </StoreProvider>
+      {/* <StoreProvider> */}
+      <Provider store={store}>
+        <App />
+      </Provider>
+      {/* </StoreProvider> */}
     </HistoryRouter>
   </React.StrictMode>
 );

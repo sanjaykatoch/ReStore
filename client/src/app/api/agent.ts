@@ -1,15 +1,24 @@
 import axios, { AxiosError, AxiosResponse } from "axios";
 import { toast } from "react-toastify";
+import { URLSearchParams } from "url";
 import { history } from "../..";
+import { PaginatedResponse } from "../model/Pagination";
 
 axios.defaults.baseURL = "https://localhost:5000/api/";
 axios.defaults.withCredentials = true;
 
-
+const sleep = () => new Promise(resolve => setTimeout(resolve, 500));
 
 const responseBody = (response: AxiosResponse) => response.data;
 
 axios.interceptors.response.use(response => {
+    sleep();
+    const pagination = response.headers["pagination"];
+    if (pagination) {
+        response.data = new PaginatedResponse(response.data, JSON.parse(pagination));
+        console.log(response);
+        return response;
+    }
     return response
 }, (error: AxiosError) => {
     const { data, status } = error.response as any;
@@ -46,11 +55,17 @@ axios.interceptors.response.use(response => {
 })
 
 const request = {
-    get: (url: string) => axios.get(url).then(responseBody),
+    get: (url: string, params?: URLSearchParams) => axios.get(url, { params }).then(responseBody),
     post: (url: string, body: {}) => axios.post(url, body).then(responseBody),
     put: (url: string, body: {}) => axios.put(url, body).then(responseBody),
     delete: (url: string) => axios.delete(url).then(responseBody),
 
+}
+
+const Account = {
+    login: (values: any) => request.post("account/login", values),
+    register: (values: any) => request.post("account/register", values),
+    currentUser: () => request.get("account/currentUser")
 }
 
 const TestErrors = {
@@ -61,8 +76,9 @@ const TestErrors = {
     getValidationError: () => request.get("Buggy/validation-error")
 };
 const Catalog = {
-    list: () => request.get("product"),
-    details: (id: number) => request.get(`product/${id}`)
+    list: (params: URLSearchParams) => request.get("product", params),
+    details: (id: number) => request.get(`product/${id}`),
+    fetchFilters: () => request.get('product/filters')
 }
 
 const Basket = {
@@ -76,7 +92,8 @@ const Basket = {
 const agent = {
     Catalog,
     TestErrors,
-    Basket
+    Basket,
+    Account
 }
 
 
